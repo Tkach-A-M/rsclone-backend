@@ -2,6 +2,7 @@ const express = require('express');
 const userRouter = require('./routes/user.routes');
 const cityRouter = require('./routes/cities.routes');
 const shopRouter = require('./routes/shops.routes');
+const mealRouter = require('./routes/meals.routes');
 
 const PORT = process.env.PORT || 8080;
 
@@ -13,6 +14,7 @@ app.use(express.json());
 app.use('/', userRouter);
 app.use('/', cityRouter);
 app.use('/', shopRouter);
+app.use('/', mealRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
