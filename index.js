@@ -3,7 +3,8 @@ const userRouter = require('./routes/user.routes');
 const cityRouter = require('./routes/cities.routes');
 const shopRouter = require('./routes/shops.routes');
 const mealRouter = require('./routes/meals.routes');
-const feedbackRouter = require('./routes/feedbacks.routes');
+const feedbackRouter = require('./routes/feedback.routes');
+const orderRouter = require('./routes/orders.routes');
 
 const PORT = process.env.PORT || 8080;
 
@@ -17,6 +18,7 @@ app.use('/', cityRouter);
 app.use('/', shopRouter);
 app.use('/', mealRouter);
 app.use('/', feedbackRouter);
+app.use('/', orderRouter);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
