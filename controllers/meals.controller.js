@@ -28,7 +28,7 @@ class MealsControllers {
     //выбор блюда по фильтрам
     async selectedMeals(req, res){
         const { selectedType, selectedPrice, selectedTime, inputString } = req.body;
-        const selectedMeals = await db.query(`SELECT id_shop, id_meal, meal_name, meal_type, meal_ingrids, meal_desc, image, price FROM test.menu m JOIN test.shop_to_menu stm ON m.id_menu = stm.id_menu WHERE stm.id_shop = ($1)`, [id_shop]);
+        const selectedMeals = await db.query(`SELECT meal_name, meal_type, meal_ingrids, meal_desc, m.image, price, si.waiting_time, si.shop_name FROM test.menu m JOIN test.shop_to_menu stm ON stm.id_menu = m.id_menu JOIN test.shop_info si ON stm.id_shop = si.id_shop WHERE meal_type = ($1) AND price < ($2) AND waiting_time < ($3) AND upper(meal_name) like upper($4)`, [selectedType, selectedPrice, selectedTime, `%${inputString}%`]);
         res.json(selectedMeals.rows);
     }
 
