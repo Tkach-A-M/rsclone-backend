@@ -27,7 +27,7 @@ class UserController {
 
     async userLogin(req, res){
         const {phone, password} = req.body;
-        const passwordRequest = await db.query('SELECT id_customer, user_password from test.customers WHERE user_phone = ($1);', [phone]);
+        const passwordRequest = await db.query('SELECT user_password from test.customers WHERE user_phone = ($1);', [phone]);
         const tabPassword = passwordRequest.rows[0].user_password;
 
         const userExist = password === tabPassword ? true : false;
@@ -42,8 +42,7 @@ class UserController {
             res.json({
                 loginStatus : 1,
                 loginMessage: 'Login success',
-                loginToken: md5(Date.now()),
-                id_customer: passwordRequest.rows[0].id_customer
+                loginToken: md5(Date.now())
             })
         }
     }
@@ -55,9 +54,25 @@ class UserController {
 
     async userChangeName(req, res){
         const { newUsername, id_ustomer } = req.body;
+        try {
             const setNewUsername = await db.query('UPDATE test.customers SET username = ($1) WHERE id_customer = ($2)', [newUsername, id_ustomer])
+        }
+        catch (e) {
+            throw new Error(e);
+        }
     }
 
+    async updateUser(req, res){
+        const {id, name, surname} = req.body;
+        const user = await  db.query('UPDATE person SET name = $1, surname = $2 WHERE id = $3 RETURNING *', [name, surname, id])
+        res.json(user.rows[0]);
+    }
+
+    async deleteUser(req, res){
+        const id = req.params.id;
+        const user = await db.query('DELETE FROM person WHERE id = $1', [id]);
+        res.json(user.rows[0]);
+    }
 }
 
 module.exports = new UserController();

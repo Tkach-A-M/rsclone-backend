@@ -20,37 +20,38 @@ class MealsControllers {
 
     async getShopMenu(req, res){
         const id_shop = req.params.id_shop;
-        const shop_menu = await db.query('SELECT id_shop, id_meal, meal_type, meal_ingrids, meal_desc, image, price FROM test.menu m JOIN test.shop_to_menu stm ON m.id_menu = stm.id_menu WHERE stm.id_shop = ($1)', [id_shop]);
+        const shop_menu = await db.query('SELECT id_shop, id_meal, meal_name, meal_type, meal_ingrids, meal_desc, image, price FROM test.menu m JOIN test.shop_to_menu stm ON m.id_menu = stm.id_menu WHERE stm.id_shop = ($1)', [id_shop]);
         res.json(shop_menu.rows);
     }
 
 
-
+    //выбор блюда по фильтрам
     async selectedMeals(req, res){
-        const { selectedType, selectedPrice, selectedTime, inputString } = res.body;
-        const selectedMeals = await db.query(`SELECT meal_name, meal_type, meal_ingrids, meal_desc, m.image, price, si.waiting_time, si.shop_name FROM test.menu m JOIN test.shop_to_menu stm ON stm.id_menu = m.id_menu JOIN test.shop_info si ON stm.id_shop = si.id_shop WHERE meal_type = ($1) AND price < ($2) AND waiting_time < ($3) AND upper(meal_name) like upper($4)`, [selectedType, selectedPrice, selectedTime, `%${inputString}%`]);
+        const { selectedType, selectedPrice, selectedTime, inputString } = req.body;
+        const selectedMeals = await db.query(`SELECT id_shop, id_meal, meal_name, meal_type, meal_ingrids, meal_desc, image, price FROM test.menu m JOIN test.shop_to_menu stm ON m.id_menu = stm.id_menu WHERE stm.id_shop = ($1)`, [id_shop]);
         res.json(selectedMeals.rows);
     }
 
-
+    //запрос на максимальную цену блюда среди всех
     async getAllMaxPrices(req, res){
         const maxPriceAll = await db.query('SELECT max(price) FROM test.menu');
         res.json(maxPriceAll.rows[0].max);
     }
 
-
+    //запрос на максимальную цену блюда по городу
     async getMaxPrice(req, res){
         const id_city = req.params.id;
         const maxPriceCity = await db.query('SELECT max(m.price) FROM test.menu m JOIN test.shop_to_menu stm ON m.id_menu = stm.id_menu JOIN test.shop_info si ON si.id_shop = stm.id_shop WHERE si.city_id = ($1);', [id_city]);
         res.json(maxPriceCity.rows[0].max);
     }
 
-
+    //запрос на максимальное время доставки среди всех
     async getAllMaxDeliveyTimes(req, res){
         const maxDeliveryTimeAll = await db.query('SELECT max(waiting_time) FROM test.shop_info');
         res.json(maxDeliveryTimeAll.rows[0].max);
     }
 
+    //запрос на максимальное время доставки по городу
     async getMaxDeliveyTime(req, res){
         const city_id = req.params.id_city;
         const maxDeliveryTimeCity = await db.query('SELECT max(waiting_time) FROM test.shop_info WHERE city_id = ($1)', [city_id]);

@@ -9,7 +9,7 @@ class ShopsControllers {
 
     async getAllShops(req, res){
         const shops = await db.query('WITH rez as (\n' +
-            'SELECT id_shop, shop_name\n' +
+            'SELECT si.id_shop, shop_name\n' +
             '\t, shop_description\n' +
             '\t, waiting_time\n' +
             '\t, (SELECT min(price) \n' +
@@ -39,7 +39,7 @@ class ShopsControllers {
         const city_id = req.params.id_shop;
     
         const cityShops = await db.query('WITH rez as (\n' +
-            'SELECT id_shop, shop_name\n' +
+            'SELECT si.id_shop, shop_name\n' +
             '\t, shop_description\n' +
             '\t, waiting_time\n' +
             '\t, (SELECT min(price) \n' +

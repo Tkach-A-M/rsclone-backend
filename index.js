@@ -3,15 +3,15 @@ const userRouter = require('./routes/user.routes');
 const cityRouter = require('./routes/cities.routes');
 const shopRouter = require('./routes/shops.routes');
 const mealRouter = require('./routes/meals.routes');
-const feedbackRouter = require('./routes/feedback.routes');
+const feedbackRouter = require('./routes/feedbacks.routes');
 const orderRouter = require('./routes/orders.routes');
 
 const PORT = process.env.PORT || 8080;
 
 const app = express();
 
-app.use(express.json());
 
+app.use(express.json());
 
 app.use('/', userRouter);
 app.use('/', cityRouter);
